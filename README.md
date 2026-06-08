@@ -30,13 +30,14 @@ The system processes the input using NLP techniques and generates insights such 
 - Django
 - Python
 
-**NLP**
-- TextBlob
-- NLTK
+**NLP & AI**
+- Hugging Face `transformers` (DistilBERT)
+- TensorFlow (Backend for Hugging Face Transformers)
 
 **Frontend**
-- HTML, CSS
-- Chart.js
+- HTML, CSS, JavaScript (Chart.js)
+- **Bootstrap** (Grid & Components)
+- **Custom CSS** (Styling & Theming)
 
 **Other Tools**
 - Requests
@@ -47,19 +48,17 @@ The system processes the input using NLP techniques and generates insights such 
 
 ```
 product_analyzer/
-│
 ├── reviews/
-│   ├── views.py
-│   ├── models.py
-│   ├── services/
-│   │   └── daraz_service.py
-│
+│   ├── services/           # Business logic layer
+│   │   ├── analytics_service.py
+│   │   ├── daraz_service.py
+│   │   ├── scraper_service.py
+│   │   └── sentiment_service.py
+│   ├── utils/              # Helpers and text cleaning
+│   │   ├── helpers.py
+│   │   └── text_cleaner.py
+│   └── views.py
 ├── templates/
-│   └── reviews_list.html
-│
-├── static/
-│   └── css/
-│
 ├── manage.py
 ├── requirements.txt
 ```
@@ -70,7 +69,7 @@ product_analyzer/
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/MoktanSujita/Product-Review-Sentiment-Analyzer.git
+git clone https://github.com/MoktanSujita/Product-Review-Analytics-and-Sentiment-Analysis-System.git
 cd product_analyzer
 ```
 
@@ -147,18 +146,19 @@ The system will:
 ```
 
 ### 3. Sentiment Analysis
+The system uses a pre-trained **DistilBERT** model from Hugging Face to perform pre-trained DistilBERT-based sentiment classifier (Hugging Face Transformers)
+
 ```python
-from textblob import TextBlob
+from transformers import pipeline
 
-polarity = TextBlob(text).sentiment.polarity
+# Initialize the pipeline
+classifier = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+
+def analyze_sentiment(text):
+    result = classifier(text)
+    return result
+
 ```
-
-**Classification Rules:**
-- > 0.2 → Positive  
-- < -0.2 → Negative  
-- Otherwise → Neutral  
-
----
 
 ## Example Output
 
@@ -166,26 +166,28 @@ polarity = TextBlob(text).sentiment.polarity
 Total Reviews: 120
 Positive: 70 (58.3%)
 Negative: 30 (25%)
-Neutral: 20 (16.7%)
-
 Overall Sentiment: Positive
+
+Neutral sentiment is derived using a confidence threshold on model output scores.
 ```
 
 ---
 
+``markdown
 ## Limitations
 
-- Depends on Daraz API availability  
-- Basic NLP model (TextBlob)  
-- Limited handling of sarcasm  
-- English-focused analysis  
-
----
+- **Scraping Reliability:** The project relies on direct requests to Daraz, which may be subject to rate-limiting or changes in their site structure.
+- **Resource Intensity:** Transformer models (DistilBERT) are more resource-intensive than rule-based models and require sufficient RAM/CPU for real-time processing.
+- **Language Support:** Currently optimized for English-based sentiments, with future plans for localized language models.
+- **Noisy real-world data:** Daraz reviews often include mixed English and Romanized Nepali text, which affects sentiment consistency.
 
 ## Future Improvements
 
-- Advanced NLP models (e.g., BERT)  
-- Multi-language support  
-- UI/UX improvements  
-- User authentication  
-- Multi-platform support  
+- **Caching:** Implement Redis or Django caching to store results for frequently searched products.
+- **Async Scraping:** Use `Celery` or `asyncio` to handle scraping in the background to avoid blocking the user experience.
+- **UI/UX:** Further visual enhancements for the dashboard.
+
+## Model Evolution
+-Started with TextBlob for baseline sentiment scoring
+-Moved to transformer-based DistilBERT for improved contextual understanding
+-Current focus is on improving robustness for real-world noisy review data

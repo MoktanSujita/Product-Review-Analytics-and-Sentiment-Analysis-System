@@ -112,3 +112,8 @@ p{
 .tag.neutral {
     background: #60a5fa;
 }
+
+.chart-card {
+    max-width: 400px; 
+    margin: 0 auto;   
+}
