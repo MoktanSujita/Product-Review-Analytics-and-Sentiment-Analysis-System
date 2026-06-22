@@ -1,8 +1,9 @@
 from transformers import pipeline
 
 classifier = pipeline('sentiment-analysis', 
-                      model='distilbert-base-uncased-finetuned-sst-2-english'
+                      model='nlptown/bert-base-multilingual-uncased-sentiment'
                     )
+
 def analyze_sentiment(text):
     """
     analyze sentiment using Huggingface transformer.
@@ -10,7 +11,7 @@ def analyze_sentiment(text):
         'label':'POSITIVE' | 'NEGATIVE' | 'NEUTRAL',
         'score':float
     }
-    """
+    """distilbert-base-uncased-finetuned-sst-2-english
 
     if not text or not text.strip():
         return{
