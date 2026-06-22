@@ -1,161 +1,62 @@
 from django.shortcuts import render, redirect
-from textblob import TextBlob
-from collections import Counter
 import re
-from .models import Review
 from .services.daraz_service import fetch_all_reviews
-
+from .services.daraz_service import analyze_sentiment_batch
+from .utils.text_cleaner import clean_text
+from .utils.helpers import get_overall_sentiment
 
 # MAIN VIEW
-def analyze_review(request):
-    result = None
+def perform_analysis(product_url):
+    match = re.search(r'i(\d+)', product_url)
+    if not match: return {"error": "Invalid Daraz URL"}
 
-    if request.method == 'POST':
+    reviews = fetch_all_reviews(match.group(1))
+    if not reviews: return {"error": "No reviews found"}
 
-        review_text = request.POST.get("review_text")
-        product_url = request.POST.get("product_url")
+    sentiments = analyze_sentiment_batch(reviews)
+    counts = {"positive": 0, "negative": 0, "neutral": 0}
+    lists = {"positive": [], "negative": [], "neutral": []}
 
-        # nothing entered
-        if not review_text and not product_url:
-            result = {"error": "Please enter review text or product URL"}
-            return render(request, "reviews_list.html", {"result": result})
+    for i, sentiment in enumerate(sentiments):
+        label = sentiment['label'].lower()
+        counts[label] += 1
+        lists[label].append(reviews[i])
 
-        # CASE 1: Manual text review
-        if review_text:
-            polarity = TextBlob(review_text).sentiment.polarity
-            sentiment = get_sentiment_label(polarity)
+    total = len(reviews)
 
-            result = {
-                "type": "text",
-                "content": review_text,
-                "polarity": round(polarity, 2),
-                "sentiment": sentiment
-            }
+    return {
+        "total_reviews": total,
+        "positive": counts["positive"],
+        "negative": counts["negative"],
+        "neutral": counts["neutral"],
+        "positive_percentage": round((counts["positive"] / total) * 100, 2),
+        "negative_percentage": round((counts["negative"] / total) * 100, 2),
+        "neutral_percentage": round((counts["neutral"] / total) * 100, 2),
+        "overall": get_overall_sentiment(counts),
+        "top_positive_words": get_top_words([clean_text(r) for r in lists["positive"]]),
+        "top_negative_words": get_top_words([clean_text(r) for r in lists["negative"]]),
+        "top_neutral_words": get_top_words([clean_text(r) for r in lists["neutral"]]),
+    }
+    
+    def analyze_revie(request):
+        if request.method == 'POST':
+            url_a = request.POST.get("url_a")
+            url_b = request.POST.get("url_b")
 
-            Review.objects.create(
-                product_name=review_text[:50],
-                product_url="",
-                sentiment=sentiment
-            )
+            results = {}
+            if url_a: results['a'] = perform_analysis(url_a)
+        if url_b: results['b'] = perform_analysis(url_b)
 
-        
-        # CASE 2: Daraz URL analysis
-        
-        elif product_url:
-            try:
-                # extract product ID safely
-                match = re.search(r'i(\d+)', product_url)
-
-                if not match:
-                    result = {"error": "Invalid Daraz URL format"}
-                    return render(request, "reviews_list.html", {"result": result})
-
-                item_id = match.group(1)
-
-                # fetch ALL reviews from service layer
-                reviews = fetch_all_reviews(item_id)
-
-                if not reviews:
-                    result = {"error": "No reviews found for this product"}
-                    return render(request, "reviews_list.html", {"result": result})
-
-                # Sentiment analysis
-                positive = negative = neutral = 0
-                positive_reviews = []
-                negative_reviews = []
-                neutral_reviews = []
-
-                for review in reviews:
-                    polarity = TextBlob(review).sentiment.polarity
-
-                    if polarity > 0.2:
-                        positive += 1
-                        positive_reviews.append(review)
-
-                    elif polarity < -0.2:
-                        negative += 1
-                        negative_reviews.append(review)
-
-                    else:
-                        neutral += 1
-                        neutral_reviews.append(review)
-
-                total = len(reviews)
-
-                # Build result for charts
-                result = {
-                    "type": "url",
-                    "total_reviews": total,
-                    "positive": positive,
-                    "negative": negative,
-                    "neutral": neutral,
-
-                    "positive_percentage": round((positive / total) * 100, 2),
-                    "negative_percentage": round((negative / total) * 100, 2),
-                    "neutral_percentage": round((neutral / total) * 100, 2),
-
-                    "overall": get_overall_sentiment(positive, negative, neutral),
-
-                    "top_positive_words": get_top_words(positive_reviews),
-                    "top_negative_words": get_top_words(negative_reviews),
-                    "top_neutral_words": get_top_words(neutral_reviews),
-
-                    "sample_positive": positive_reviews[:3],
-                    "sample_negative": negative_reviews[:3],
-                    "sample_neutral": neutral_reviews[:3],
-                }
-
-                Review.objects.create(
-                    product_name=product_url[:80],
-                    product_url=product_url,
-                    sentiment=result["overall"]
-                )
-
-            except Exception as e:
-                result = {"error": str(e)}
-
-        # store for charts
-        request.session["result"] = result
+        request.session["results"] = results
         return redirect("chart_page")
 
-    return render(request, "reviews_list.html", {"result": result})
+    return render(request, "reviews_list.html")
 
-
-# HELPERS
-def get_sentiment_label(polarity):
-    if polarity > 0.2:
-        return "Positive"
-    elif polarity < -0.2:
-        return "Negative"
-    return "Neutral"
-
-
-stop_words = {
-    "the", "is", "in", "and", "to", "a", "of", "it", "for",
-    "on", "with", "was", "as", "but", "are", "this", "that",
-    "xa", "k"
-}
-
-
-def get_top_words(review_list):
+# Keep only specialized logic here, or move it to helpers too!
+def get_top_words(cleaned_review_list):
+    from collections import Counter
     words = []
-
-    for review in review_list:
-        cleaned = re.sub(r'[^\w\s]', '', review.lower())
-        words.extend([w for w in cleaned.split() if w not in stop_words])
-
+    for review in cleaned_review_list:
+        words.extend(review.split())
+    # Filter out your stop_words list here
     return Counter(words).most_common(3)
-
-
-def get_overall_sentiment(positive, negative, neutral):
-    if positive > negative and positive > neutral:
-        return "Overall Positive"
-    elif negative > positive and negative > neutral:
-        return "Overall Negative"
-    return "Overall Neutral"
-
-
-# CHART PAGE
-def chart_page(request):
-    result = request.session.get("result", {})
-    return render(request, "chart.html", {"result": result})
