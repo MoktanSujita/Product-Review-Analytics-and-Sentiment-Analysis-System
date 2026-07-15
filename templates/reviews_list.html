@@ -12,11 +12,17 @@
 
         <form method="POST">
             {% csrf_token %}
-            <textarea name="review_text" placeholder="Enter review..."></textarea><br>
-            <input type="text" name="product_url" placeholder="Paste product URL"><br>
+            
+            <div class="mb-3">
+                <label> Product A URL</label>
+                <input type="text" name="product_url" placeholder="Paste product URL"required>
+            </div>
+            <div class="mb-3">
+                <label> Product B URL</label>
+                <input type="text" name="product_url" placeholder="Paste second product URL" required>
+            </div>
             <button type="submit">Analyze</button>
         </form>
-
 
         {% if result %}
         <div class="result">

@@ -20,10 +20,14 @@ def analyze_sentiment(text):
         'score': round(result['score'],4)
     }
 
-def analyze_sentimetn_batch(reviews):
+def analyze_sentiment_batch(reviews):
     valid_reviews = [r[:512] for r in reviews if r and r.strip()]
     if not valid_reviews:
         return []
     
     results = classifier(valid_reviews)
-    return[{'label': map_label(r['label']), 'score': round(r['score'],4)} for r in results ]
+    return[
+        {
+            'label': map_label(r['label']),
+            'score': round(r['score'],4)
+        } for r in results ]
