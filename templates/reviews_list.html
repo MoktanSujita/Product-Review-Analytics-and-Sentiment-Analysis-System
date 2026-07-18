@@ -14,12 +14,12 @@
             {% csrf_token %}
             
             <div class="mb-3">
-                <label> Product A URL</label>
-                <input type="text" name="product_url" placeholder="Paste product URL"required>
+                <label> Product A URL (required)</label>
+                <input type="text" name="url_a" placeholder="Paste product URL"required>
             </div>
             <div class="mb-3">
-                <label> Product B URL</label>
-                <input type="text" name="product_url" placeholder="Paste second product URL" required>
+                <label> Product B URL (optional)</label>
+                <input type="text" name="url_b" placeholder="Paste second product URL">
             </div>
             <button type="submit">Analyze</button>
         </form>

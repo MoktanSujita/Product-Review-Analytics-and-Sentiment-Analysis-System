@@ -6,7 +6,7 @@ from .services.daraz_service import fetch_all_reviews
 from .services.sentiment_service import analyze_sentiment_batch
 from .utils.text_cleaner import clean_text
 from .utils.helpers import get_overall_sentiment
-
+from .utils.keyword_extractor import extract_key_phrases
 
 def get_top_words(cleaned_review_list):
     words = []
@@ -68,19 +68,44 @@ def perform_analysis(product_url):
 
         "overall": get_overall_sentiment(counts),
 
-        "top_positive_words": get_top_words(
+        "top_positive_words": extract_key_phrases(
             [clean_text(r) for r in categorized_reviews["positive"]]
         ),
 
-        "top_negative_words": get_top_words(
+        "top_negative_words": extract_key_phrases   (
             [clean_text(r) for r in categorized_reviews["negative"]]
         ),
 
-        "top_neutral_words": get_top_words(
+        "top_neutral_words": extract_key_phrases(
             [clean_text(r) for r in categorized_reviews["neutral"]]
         ),
     }
 
+def compare_reviews(product_a, product_b):
+    score_a = (
+        (product_a["positive"]-product_a["negative"]/product_a["total_reviews"])*100
+    )
+    score_b = (
+        (product_b["positive"]-product_b["negative"]/product_b["total_reviews"])*100
+    )
+
+    if score_a > score_b:
+        winner = "Product A"
+        verdict = "Product A is more positively reviewed."
+        
+    elif score_b > score_a:
+        winner = "Product B"
+        verdict = "Product B is more positively reviewed."
+    else:
+        winner = "Tie"
+        verdict = "Both products have similar review sentiments."   
+
+    return {
+        "winner": winner,
+        "verdict": verdict,
+        "score_a": round(score_a, 2),
+        "score_b": round(score_b, 2),
+    }
 
 def analyze_review(request):
     if request.method == "POST":
@@ -92,9 +117,22 @@ def analyze_review(request):
 
         if url_a:
             results["a"] = perform_analysis(url_a)
+            print("Analysis A:", results["a"])
 
         if url_b:
             results["b"] = perform_analysis(url_b)
+            print("Analysis B:", results["b"])
+            # if url_a:
+        #     results["a"] = perform_analysis(url_a)
+
+        # if url_b:
+        #     results["b"] = perform_analysis(url_b)
+
+        # if "a" in results and "b" in results:
+        #     results["comparison"] = compare_reviews(
+        #         results["a"],
+        #         results["b"]
+        #     )
 
         request.session["results"] = results
 
@@ -105,11 +143,12 @@ def analyze_review(request):
 
 def chart_page(request):
     results = request.session.get("results", {})
+    print("Session results:", results)
 
     return render(
         request,
         "chart.html",
         {
             "results": results,
-        },
+        }
     )

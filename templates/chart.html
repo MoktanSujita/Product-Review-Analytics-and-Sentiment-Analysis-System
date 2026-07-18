@@ -26,22 +26,22 @@
         <div class="col-md-4">
             <div class="card p-4 shadow-sm kpi-card border-start border-success border-4">
                 <p class="text-muted mb-1">Positive</p>
-                <h3 class="mb-0">{{result.positive}}</h3>
-                <small class="text-success fw-bold">{{result.positive_percentage}}% of total</small>
+                <h3 class="mb-0">{{results.a.positive}}</h3>
+                <small class="text-success fw-bold">{{results.positive_percentage}}% of total</small>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-4 shadow-sm kpi-card border-start border-danger border-4">
                 <p class="text-muted mb-1">Negative</p>
-                <h3 class="mb-0">{{result.negative}}</h3>
-                <small class="text-danger fw-bold">{{result.negative_percentage}}% of total</small>
+                <h3 class="mb-0">{{results.a.negative}}</h3>
+                <small class="text-danger fw-bold">{{results.a.negative_percentage}}% of total</small>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-4 shadow-sm kpi-card border-start border-secondary border-4">
                 <p class="text-muted mb-1">Neutral</p>
-                <h3 class="mb-0">{{result.neutral}}</h3>
-                <small class="text-secondary fw-bold">{{result.neutral_percentage}}% of total</small>
+                <h3 class="mb-0">{{results.a.neutral}}</h3>
+                <small class="text-secondary fw-bold">{{results.a.neutral_percentage}}% of total</small>
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@
         <div class="mb-3">
             <label class="small text-muted">Positive</label>
             <div>
-                {% for word, count in result.top_positive_words %}
+                {% for word, count in results.a.top_positive_words %}
                     <span class="badge bg-success-subtle text-success me-1">{{ word }} ({{ count }})</span>
                 {% endfor %}
             </div>
@@ -59,7 +59,7 @@
         <div>
             <label class="small text-muted">Negative</label>
             <div>
-                {% for word, count in result.top_negative_words %}
+                {% for word, count in results.a.top_negative_words %}
                     <span class="badge bg-danger-subtle text-danger me-1">{{ word }} ({{ count }})</span>
                 {% endfor %}
             </div>
@@ -72,9 +72,9 @@
     </div>
 
     <div class="text-center p-4">
-        {% if result.positive_percentage >= 60 %}
+        {% if results.a.positive_percentage >= 60 %}
             <div class="alert alert-success"><h5>Recommended Product</h5></div>
-        {% elif result.negative_percentage >= 50 %}
+        {% elif results.a.negative_percentage >= 50 %}
             <div class="alert alert-danger"><h5>Not Recommended</h5></div>
         {% else %}
             <div class="alert alert-warning"><h5>Mixed Reviews</h5></div>
@@ -84,9 +84,9 @@
 
 <script>
     const sentimentData = {
-        positive: Number("{{ result.positive|default:0 }}"),
-        negative: Number("{{ result.negative|default:0 }}"),
-        neutral: Number("{{ result.neutral|default:0 }}")
+        positive: Number("{{ results.a.positive|default:0 }}"),
+        negative: Number("{{ results.a.negative|default:0 }}"),
+        neutral: Number("{{ results.a.neutral|default:0 }}")
     };
 
     const ctx = document.getElementById('sentimentChart').getContext('2d');
