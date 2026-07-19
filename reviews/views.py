@@ -115,24 +115,17 @@ def analyze_review(request):
 
         results = {}
 
-        if url_a:
-            results["a"] = perform_analysis(url_a)
-            print("Analysis A:", results["a"])
+    if url_a:
+        results["a"] = perform_analysis(url_a)
 
-        if url_b:
-            results["b"] = perform_analysis(url_b)
-            print("Analysis B:", results["b"])
-            # if url_a:
-        #     results["a"] = perform_analysis(url_a)
+    if url_b:
+        results["b"] = perform_analysis(url_b)
 
-        # if url_b:
-        #     results["b"] = perform_analysis(url_b)
-
-        # if "a" in results and "b" in results:
-        #     results["comparison"] = compare_reviews(
-        #         results["a"],
-        #         results["b"]
-        #     )
+    if "a" in results and "b" in results:
+        results["comparison"] = compare_reviews(
+            results["a"],
+            results["b"]
+        )
 
         request.session["results"] = results
 
@@ -143,11 +136,10 @@ def analyze_review(request):
 
 def chart_page(request):
     results = request.session.get("results", {})
-    print("Session results:", results)
 
     return render(
         request,
-        "chart.html",
+        "dashboard.html",
         {
             "results": results,
         }
