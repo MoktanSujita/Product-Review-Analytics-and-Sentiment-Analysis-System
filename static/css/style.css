@@ -1,124 +1,818 @@
-body {
-    font-family: Arial sans-serif;
-    background: #0f172a;
-    margin: 0;
-    color: white;
-}
-.box {
-    background: #1e293b;
-    padding: 30px;
-    border-radius: 16px;
-    width: 60%;
-    margin: 60px auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+/* ==========================================================
+   PRODUCT REVIEW SENTIMENT ANALYZER
+   Part 1 - Global Layout & Dashboard Structure
+========================================================== */
+
+:root{
+
+    --primary:#2563EB;
+
+    --positive:#22C55E;
+    --negative:#EF4444;
+    --neutral:#FACC15;
+
+    --background:#F4F7FC;
+
+    --card:#FFFFFF;
+
+    --text:#1F2937;
+    --text-light:#6B7280;
+
+    --border:#E5E7EB;
+
+    --shadow:
+        0 10px 30px rgba(0,0,0,.08);
+
+    --radius:18px;
+
 }
 
-textarea, input {
-    width: 85%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: none;
-    outline: none;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-button {
-    padding: 12px 25px;
-    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    transition: 0.3s;
+body{
+
+    background:var(--background);
+
+    font-family:"Poppins",sans-serif;
+
+    color:var(--text);
+
+    min-height:100vh;
+
 }
 
-button:hover{
-    transform: scale(1.05);
+/* ==========================================================
+   Dashboard Container
+========================================================== */
+
+.dashboard-container{
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:35px;
+
 }
 
-.result {
-    padding: 20px;
-    margin-top: 25px;
-    border-radius: 12px;
-    background: #334155;
+/* ==========================================================
+   Header
+========================================================== */
+
+.dashboard-header{
+
+    background:var(--card);
+
+    border-radius:var(--radius);
+
+    padding:28px 35px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:var(--shadow);
+
+    margin-bottom:35px;
+
 }
 
-p{
-    line-height: 1.5;
+.header-left h5{
+
+    color:var(--primary);
+
+    font-size:.9rem;
+
+    font-weight:600;
+
+    margin-bottom:6px;
+
 }
 
-.result p:nth-child(2){
-    color: #38bdf8;
+.header-left h2{
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
 }
 
-.kpi-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
+.header-left p{
+
+    color:var(--text-light);
+
+    font-size:.95rem;
+
 }
 
-.kpi {
-    background: #1e293b;
-    padding: 15px 25px;
-    border-radius: 12px;
-    min-width: 120px;
+.dashboard-logo{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:18px;
+
+    background:var(--primary);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:2rem;
+
+    color:white;
+
 }
 
-.kpi h3 {
-    margin: 0;
-    font-size: 24px;
+/* ==========================================================
+   Dashboard Cards
+========================================================== */
+
+.dashboard-card{
+
+    background:white;
+
+    border-radius:var(--radius);
+
+    box-shadow:var(--shadow);
+
+    padding:28px;
+
+    height:100%;
+
+    transition:.25s ease;
+
 }
 
-.kpi p {
-    margin: 5px 0 0;
-    color: #94a3b8;
+.dashboard-card:hover{
+
+    transform:translateY(-5px);
+
 }
 
-.kpi.positive { 
-    border-left: 4px solid #22c55e;
+/* ==========================================================
+   Product Header
+========================================================== */
+
+.product-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:25px;
+
 }
 
-.kpi.negative { 
-    border-left: 4px solid #ef4444; 
+.product-tag{
+
+    display:inline-block;
+
+    background:#DBEAFE;
+
+    color:var(--primary);
+
+    padding:5px 14px;
+
+    border-radius:999px;
+
+    font-size:.75rem;
+
+    font-weight:700;
+
+    letter-spacing:.6px;
+
+    margin-bottom:10px;
+
 }
 
-.kpi.neutral { 
-    border-left: 4px solid #60a5fa; 
+.product-header h4{
+
+    font-size:1.35rem;
+
+    font-weight:700;
+
 }
 
-.word-section {
-    margin-top: 20px;
+.overall-badge{
+
+    background:#EEF2FF;
+
+    color:var(--primary);
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    font-weight:600;
+
+    font-size:.9rem;
+
 }
 
-.tag {
-    display: inline-block;
-    padding: 6px 10px;
-    margin: 5px;
-    border-radius: 8px;
-    font-size: 13px;
-    color: white;
+/* ==========================================================
+   Summary Grid
+========================================================== */
+
+.summary-grid{
+
+    margin-top:25px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:18px;
+
 }
 
-.tag.positive {
-    background: #22c55e;
+.summary-item{
+
+    background:#F9FAFB;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:18px;
+
 }
 
-.tag.negative {
-    background: #ef4444;
+.summary-item span{
+
+    display:block;
+
+    color:var(--text-light);
+
+    font-size:.82rem;
+
+    margin-bottom:6px;
+
 }
 
-.tag.neutral {
-    background: #60a5fa;
+.summary-item strong{
+
+    font-size:1.35rem;
+
+    color:var(--text);
+
 }
 
-.chart-card {
-    max-width: 400px; 
-    margin: 0 auto;   
+/* ==========================================================
+   Utility
+========================================================== */
+
+.mt-4{
+
+    margin-top:28px !important;
+
+}
+/* ==========================================================
+   Part 2 - Sentiment Meter & Product Cards
+========================================================== */
+
+/* =========================
+   Meter Section
+========================= */
+
+.meter-section{
+
+    position:relative;
+
+    width:220px;
+
+    height:220px;
+
+    margin:15px auto 10px;
+
 }
 
-#sentimentChart {
-    width: 100%;
-    height: 400px;
+.meter-section canvas{
+
+    width:220px !important;
+
+    height:220px !important;
+
+}
+
+.meter-center{
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    pointer-events:none;
+
+}
+
+.meter-score{
+
+    font-size:2.2rem;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    line-height:1;
+
+}
+
+.meter-label{
+
+    margin-top:8px;
+
+    font-size:.9rem;
+
+    color:var(--text-light);
+
+    font-weight:500;
+
+}
+
+/* =========================
+   Meter Legend
+========================= */
+
+.meter-legend{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:22px;
+
+    margin-top:18px;
+
+}
+
+.legend-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:.9rem;
+
+    color:var(--text-light);
+
+}
+
+.legend-color{
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+}
+
+.legend-positive{
+
+    background:var(--positive);
+
+}
+
+.legend-negative{
+
+    background:var(--negative);
+
+}
+
+.legend-neutral{
+
+    background:var(--neutral);
+
+}
+
+/* =========================
+   Product Summary
+========================= */
+
+.product-summary{
+
+    margin-top:25px;
+
+    border-top:1px solid var(--border);
+
+    padding-top:20px;
+
+}
+
+.product-summary h6{
+
+    font-size:.9rem;
+
+    color:var(--text-light);
+
+    margin-bottom:18px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+.summary-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:15px;
+
+}
+
+.summary-item{
+
+    background:#F9FAFB;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:16px;
+
+    transition:.25s;
+
+}
+
+.summary-item:hover{
+
+    background:white;
+
+    transform:translateY(-2px);
+
+}
+
+.summary-item span{
+
+    display:block;
+
+    color:var(--text-light);
+
+    font-size:.8rem;
+
+    margin-bottom:6px;
+
+}
+
+.summary-item strong{
+
+    display:block;
+
+    font-size:1.35rem;
+
+    font-weight:700;
+
+    color:var(--text);
+
+}
+
+/* =========================
+   Overall Badge Colors
+========================= */
+
+.overall-positive{
+
+    background:#DCFCE7;
+
+    color:#15803D;
+
+}
+
+.overall-negative{
+
+    background:#FEE2E2;
+
+    color:#B91C1C;
+
+}
+
+.overall-neutral{
+
+    background:#FEF3C7;
+
+    color:#B45309;
+
+}
+
+/* =========================
+   Single Product Layout
+========================= */
+
+.single-product{
+
+    max-width:650px;
+
+    margin:auto;
+
+}
+
+/* =========================
+   Small Animation
+========================= */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.dashboard-card{
+
+    animation:fadeUp .5s ease;
+
+}
+/* ==========================================================
+   Part 3 - Comparison Section & Statistics
+========================================================== */
+
+/* =========================
+   Comparison Card
+========================= */
+
+.comparison-card{
+
+    padding:30px;
+
+}
+
+.comparison-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.comparison-header h3{
+
+    font-size:1.6rem;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin-bottom:5px;
+
+}
+
+.comparison-header p{
+
+    color:var(--text-light);
+
+    font-size:.9rem;
+
+    margin:0;
+
+}
+
+.compare-badge{
+
+    background:#DBEAFE;
+
+    color:var(--primary);
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    font-size:.85rem;
+
+    font-weight:600;
+
+}
+
+/* =========================
+   Chart Container
+========================= */
+
+.chart-container{
+
+    position:relative;
+
+    width:100%;
+
+    height:420px;
+
+    margin-top:20px;
+
+}
+
+.chart-container canvas{
+
+    width:100% !important;
+
+    height:100% !important;
+
+}
+
+/* =========================
+   Statistics Cards
+========================= */
+
+.stat-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    border:1px solid var(--border);
+
+    box-shadow:var(--shadow);
+
+    padding:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    transition:.25s;
+
+    height:100%;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.stat-icon{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:16px;
+
+    background:#EFF6FF;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:1.6rem;
+
+    flex-shrink:0;
+
+}
+
+.stat-icon.positive{
+
+    background:#DCFCE7;
+
+}
+
+.stat-icon.negative{
+
+    background:#FEE2E2;
+
+}
+
+.stat-icon.neutral{
+
+    background:#FEF3C7;
+
+}
+
+.stat-card h2{
+
+    font-size:1.7rem;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin:0;
+
+}
+
+.stat-card p{
+
+    margin-top:6px;
+
+    color:var(--text-light);
+
+    font-size:.9rem;
+
+    margin-bottom:0;
+
+}
+
+/* =========================
+   Chart Legend
+========================= */
+
+.chart-legend{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:30px;
+
+    margin-top:20px;
+
+}
+
+.chart-legend .legend{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:.9rem;
+
+    color:var(--text-light);
+
+}
+
+.legend-dot{
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:50%;
+
+}
+
+.legend-dot.product-a{
+
+    background:var(--primary);
+
+}
+
+.legend-dot.product-b{
+
+    background:#8B5CF6;
+
+}
+
+/* =========================
+   Divider
+========================= */
+
+.section-divider{
+
+    margin:35px 0;
+
+    border-top:1px solid var(--border);
+
 }

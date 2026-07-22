@@ -79,6 +79,8 @@ def perform_analysis(product_url):
         "top_neutral_words": extract_key_phrases(
             [clean_text(r) for r in categorized_reviews["neutral"]]
         ),
+        
+        "recommendation": "Highly Recommended" if counts["positive"] >= 70 else "Recommended" if counts["positive"] >= 50 else "Buy with Caution",
     }
 
 def compare_reviews(product_a, product_b):
@@ -115,14 +117,14 @@ def analyze_review(request):
 
         results = {}
 
-    if url_a:
-        results["a"] = perform_analysis(url_a)
+        if url_a:
+            results["a"] = perform_analysis(url_a)
 
-    if url_b:
-        results["b"] = perform_analysis(url_b)
+        if url_b:
+            results["b"] = perform_analysis(url_b)
 
-    if "a" in results and "b" in results:
-        results["comparison"] = compare_reviews(
+        if "a" in results and "b" in results:
+            results["comparison"] = compare_reviews(
             results["a"],
             results["b"]
         )

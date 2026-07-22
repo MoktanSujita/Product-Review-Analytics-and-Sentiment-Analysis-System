@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glassmorphism Dashboard — Bootstrap</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --glass-bg: rgba(255,255,255,0.55);
+    --glass-bg-strong: rgba(255,255,255,0.7);
+    --glass-border: rgba(255,255,255,0.6);
+    --glass-shadow: 0 8px 32px rgba(31,38,135,0.18);
+  }
+
+  body{
+    min-height:100vh;
+    font-family:'Segoe UI',system-ui,sans-serif;
+
+    background:
+        linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)),
+        url("/static/images/dashboard-bg.jpg");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+
+    padding:32px 24px;
+}
+
+  .glass-card{
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .glass-card:hover{
+    box-shadow: 0 12px 40px rgba(31,38,135,0.25);
+  }
+
+  .glass-navbar{
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+  }
+
+  .mini-stat{
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+  }
+
+  .icon-badge{
+    width:44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.1rem;
+  }
+
+  .text-muted-soft{ color:#6b7280 !important; }
+  .fw-800{ font-weight:800; }
+
+  /* ===== SEMI-CIRCULAR GAUGE STYLES ===== */
+  .gauge {
+    position: relative;
+    width: 260px;
+    height: 140px; /* Half-circle height container */
+    margin: 10px auto 20px auto;
+    overflow: hidden;
+  }
+
+  .gauge-ring {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Masks out the bottom half to create a 180-degree semi-circle arc */
+    clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+  }
+
+  .gauge-ring::before {
+    content: "";
+    position: absolute;
+    inset: 20px; /* Controls thickness of the ring */
+    background: var(--glass-bg-strong);
+    border-radius: 50%;
+  }
+
+  .gauge-content {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 2;
+  }
+
+  .gauge-content i {
+    font-size: 1.2rem;
+    color: #14c7d9;
+    margin-bottom: 2px;
+  }
+
+  .gauge-content p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4b2ea0;
+    margin-bottom: 0;
+  }
+
+  .gauge-content h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin-top: -2px;
+  }
+  /* ======================================= */
+
+  .donut{
+    width:150px;height:150px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .donut::before{
+    content:"";
+    position:absolute; inset:12px;
+    background: var(--glass-bg-strong);
+    border-radius:50%;
+  }
+  .donut-label{ position:relative; z-index:2; text-align:center; }
+
+  .bar{
+    width:14px;
+    border-radius:6px 6px 0 0;
+    display:inline-block;
+  }
+
+  .recommend-btn{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border-radius:40px;
+    text-align:center;
+    font-weight:600;
+    background:#f7f5ff;
+    color:#6655c9;
+    border:1px solid #d8d1ff;
+    transition:.3s;
+  }
+  .recommend-btn.caution{
+    background:#fff1f1;
+    color:#d23c3c;
+    border-color:#ffd1d1;
+  }
+  .recommend-btn.neutral{
+    background:#fff9eb;
+    color:#c58a00;
+    border-color:#ffe7a8;
+  }
+</style>
+</head>
+<body>
+
+<div class="container-fluid" style="max-width:1300px;">
+
+  <!-- Top navbar -->
+  <div class="glass-navbar d-flex align-items-center justify-content-between px-4 py-3 mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <div>
+        <div class="small text-muted-dark">Product Review Sentiment Analyzer</div>
+        <div class="fw-700 fw-bold">Dashboard</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Sentiment Meter Left Card -->
+    <div class="col-lg-3">
+      <div class="glass-card p-4 text-center h-100">
+
+        <h5 class="fw-bold text-start mb-1">
+            Sentiment Meter
+        </h5>
+        <p class="text-muted-soft text-start mb-4">
+            Overall ratings
+        </p>
+
+        <!-- Circular Semi-Meter -->
+        <div class="gauge">
+          <div class="gauge-ring"
+              style="
+              background:
+              conic-gradient(
+                  from 270deg,
+                  #14c7d9 0deg calc({{ results.a.positive_percentage }} * 1.8deg),
+                  #4f46e5 calc({{ results.a.positive_percentage }} * 1.8deg) calc(({{ results.a.positive_percentage }} + {{ results.a.negative_percentage }}) * 1.8deg),
+                  #e5e7eb calc(({{ results.a.positive_percentage }} + {{ results.a.negative_percentage }}) * 1.8deg) 180deg
+              );
+              ">
+          </div>
+          <div class="gauge-content">
+              {% if results.a.overall == "Positive" %}
+                  <i class="fa-solid fa-face-smile"></i>
+              {% elif results.a.overall == "Negative" %}
+                  <i class="fa-solid fa-face-frown"></i>
+              {% else %}
+                  <i class="fa-solid fa-face-meh"></i>
+              {% endif %}
+              <p>{{ results.a.overall }}</p>
+              <h2>{{ results.a.positive_percentage }}%</h2>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row text-center mb-4">
+            <div class="col-6">
+                <h4 class="fw-bold mb-0">
+                    {{ results.a.negative_percentage }}%
+                </h4>
+                <small class="text-muted-soft">Negative</small>
+            </div>
+            <div class="col-6">
+                <h4 class="fw-bold mb-0">
+                    {{ results.a.neutral_percentage }}%
+                </h4>
+                <small class="text-muted-soft">Neutral</small>
+            </div>
+        </div>
+
+        <!-- Recommendation Button -->
+        {% if results.a.overall == "Positive" %}
+          <div class="recommend-btn" ">Highly Recommended</div>
+        {% elif results.a.overall == "Negative" %}
+          <div class="recommend-btn caution">Buy with Caution</div>
+        {% else %}
+          <div class="recommend-btn neutral">Mixed Customer Opinions</div>
+        {% endif %}
+
+      </div>
+    </div>
+
+<!-- ================= END LEFT CARD ================= -->
+
+    <!-- Sentiment Analysis -->
+    <div class="col-lg-6">
+      <div class="glass-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="fw-bold mb-0">Sentiment Analysis</h6>
+            <div class="small text-muted-soft">Month wise</div>
+          </div>
+          <select class="form-select form-select-sm glass-card border-0" style="width:auto;">
+            <option>Apr - Jun</option>
+          </select>
+        </div>
+
+        <div class="row align-items-end mt-4">
+          <div class="col-7">
+            <div class="d-flex align-items-end justify-content-around" style="height:180px;">
+              <div class="d-flex gap-1 align-items-end">
+                <div class="bar bg-info" style="height:40%;"></div>
+                <div class="bar bg-warning" style="height:65%;"></div>
+              </div>
+              <div class="d-flex gap-1 align-items-end">
+                <div class="bar bg-primary" style="height:75%;"></div>
+                <div class="bar bg-info" style="height:55%;"></div>
+              </div>
+              <div class="d-flex gap-1 align-items-end">
+                <div class="bar bg-info" style="height:90%;"></div>
+                <div class="bar bg-warning" style="height:60%;"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-around small fw-semibold mt-2">
+              <span>April</span><span>May</span><span>June</span>
+            </div>
+          </div>
+
+          <div class="col-5 text-center">
+            <div class="small text-muted-soft">Showing for the month of</div>
+            <div class="fw-bold mb-2">APRIL</div>
+            <div class="donut mx-auto"
+                 style="width:130px;height:130px; background: conic-gradient(#16c4d8 0deg 245deg,#4b5cff 245deg 260deg,3ececec 260deg 360deg);">
+              <div class="donut-label">
+                <div class="fs-4 fw-800">22%</div>
+                <i class="fa-solid fa-thumbs-down text-warning"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row text-center mt-4">
+          <div class="col-4">
+            <div class="fs-5 fw-bold">2,744</div>
+            <div class="small"><span class="badge rounded-circle bg-info">&nbsp;</span> Positive</div>
+          </div>
+          <div class="col-4">
+            <div class="fs-5 fw-bold">782</div>
+            <div class="small"><span class="badge rounded-circle bg-primary">&nbsp;</span> Negative</div>
+          </div>
+          <div class="col-4">
+            <div class="fs-5 fw-bold">568</div>
+            <div class="small"><span class="badge rounded-circle bg-warning">&nbsp;</span> Neutral</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right stat column -->
+    <div class="col-lg-3">
+      <div class="d-flex flex-column gap-3 h-100">
+
+        <div class="mini-stat p-3 d-flex align-items-center gap-3">
+          <div class="icon-badge bg-primary-subtle"><i class="fa-solid fa-envelope text-primary"></i></div>
+          <div>
+            <div class="fw-800 fs-5">1,233</div>
+            <div class="small text-muted-soft">No. of Posts</div>
+          </div>
+        </div>
+
+        <div class="mini-stat p-3 d-flex align-items-center gap-3">
+          <div class="icon-badge bg-info-subtle"><i class="fa-solid fa-comment text-info"></i></div>
+          <div>
+            <div class="fw-800 fs-5">1.1 M</div>
+            <div class="small text-muted-soft">Reaction Received</div>
+          </div>
+        </div>
+
+        <div class="mini-stat p-3 d-flex align-items-center gap-3">
+          <div class="icon-badge bg-primary-subtle"><i class="fa-solid fa-mars text-primary"></i></div>
+          <div>
+            <div class="fw-800 fs-5">1.2 M</div>
+            <div class="small text-muted-soft">Male Mentions</div>
+          </div>
+        </div>
+
+        <div class="mini-stat p-3 d-flex align-items-center gap-3">
+          <div class="icon-badge bg-warning-subtle"><i class="fa-solid fa-lightbulb text-warning"></i></div>
+          <div>
+            <div class="fw-800 fs-5">0.8 M</div>
+            <div class="small text-muted-soft">Female Mentions</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
