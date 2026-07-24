@@ -8,11 +8,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root{
-    --glass-bg: rgba(255,255,255,0.55);
-    --glass-bg-strong: rgba(255,255,255,0.7);
-    --glass-border: rgba(255,255,255,0.6);
-    --glass-shadow: 0 8px 32px rgba(31,38,135,0.18);
-  }
+    --glass-bg:#ffffff;
+    --glass-bg-strong:#ffffff;
+    --glass-border:rgba(255,255,255,.95);
+    --glass-shadow:0 18px 45px rgba(0,0,0,.18);
+}
 
   body{
     min-height:100vh;
@@ -20,7 +20,7 @@
 
     background:
         linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)),
-        url("/static/images/dashboard-bg.jpg");
+        url("/static/images/dashboard-bg.jpeg");
 
     background-size:cover;
     background-position:center;
@@ -31,33 +31,43 @@
 }
 
   .glass-card{
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    box-shadow: var(--glass-shadow);
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
+    background:#fff;
+    border-radius:24px;
+    border:1px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.12);
+
+    transition:.25s;
+}
+
+.glass-card:hover{
+    transform:translateY(-2px);
+}
   .glass-card:hover{
     box-shadow: 0 12px 40px rgba(31,38,135,0.25);
   }
 
   .glass-navbar{
-    background: var(--glass-bg-strong);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 18px;
-  }
+    background:rgba(255,255,255,.18);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:22px;
+}
 
   .mini-stat{
-    background: var(--glass-bg);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-  }
+    background:#fff;
+
+    border-radius:22px;
+
+    border:none;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.12);
+}
 
   .icon-badge{
     width:44px;height:44px;border-radius:50%;
@@ -192,7 +202,7 @@
       <div class="glass-card p-4 text-center h-100">
 
         <h5 class="fw-bold text-start mb-1">
-            Sentiment Meter
+            Sentiment Meter of Product A
         </h5>
         <p class="text-muted-soft text-start mb-4">
             Overall ratings
@@ -244,6 +254,71 @@
         {% if results.a.overall == "Positive" %}
           <div class="recommend-btn" ">Highly Recommended</div>
         {% elif results.a.overall == "Negative" %}
+          <div class="recommend-btn caution">Buy with Caution</div>
+        {% else %}
+          <div class="recommend-btn neutral">Mixed Customer Opinions</div>
+        {% endif %}
+
+      </div>
+    </div>
+  <div class="row g-4">
+    <!-- Sentiment Meter Left Card -->
+    <div class="col-lg-3">
+      <div class="glass-card p-4 text-center h-100">
+
+        <h5 class="fw-bold text-start mb-1">
+            Sentiment Meter of Product B
+        </h5>
+        <p class="text-muted-soft text-start mb-4">
+            Overall ratings
+        </p>
+
+        <!-- Circular Semi-Meter -->
+        <div class="gauge">
+          <div class="gauge-ring"
+              style="
+              background:
+              conic-gradient(
+                  from 270deg,
+                  #14c7d9 0deg calc({{ results.b.positive_percentage }} * 1.8deg),
+                  #4f46e5 calc({{ results.b.positive_percentage }} * 1.8deg) calc(({{ results.b.positive_percentage }} + {{ results.b.negative_percentage }}) * 1.8deg),
+                  #e5e7eb calc(({{ results.b.positive_percentage }} + {{ results.b.negative_percentage }}) * 1.8deg) 180deg
+              );
+              ">
+          </div>
+          <div class="gauge-content">
+              {% if results.b.overall == "Positive" %}
+                  <i class="fa-solid fa-face-smile"></i>
+              {% elif results.b.overall == "Negative" %}
+                  <i class="fa-solid fa-face-frown"></i>
+              {% else %}
+                  <i class="fa-solid fa-face-meh"></i>
+              {% endif %}
+              <p>{{ results.b.overall }}</p>
+              <h2>{{ results.b.positive_percentage }}%</h2>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row text-center mb-4">
+            <div class="col-6">
+                <h4 class="fw-bold mb-0">
+                    {{ results.b.negative_percentage }}%
+                </h4>
+                <small class="text-muted-soft">Negative</small>
+            </div>
+            <div class="col-6">
+                <h4 class="fw-bold mb-0">
+                    {{ results.b.neutral_percentage }}%
+                </h4>
+                <small class="text-muted-soft">Neutral</small>
+            </div>
+        </div>
+
+        <!-- Recommendation Button -->
+        {% if results.b.overall == "Positive" %}
+          <div class="recommend-btn" ">Highly Recommended</div>
+        {% elif results.b.overall == "Negative" %}
           <div class="recommend-btn caution">Buy with Caution</div>
         {% else %}
           <div class="recommend-btn neutral">Mixed Customer Opinions</div>
