@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 import re
 from collections import Counter
 
+import plotly.graph_objects as go
+from plotly.offline import plot
 from .services.daraz_service import fetch_all_reviews
 from .services.sentiment_service import analyze_sentiment_batch
 from .utils.text_cleaner import clean_text
@@ -139,10 +141,50 @@ def analyze_review(request):
 def chart_page(request):
     results = request.session.get("results", {})
 
+    comparison_chart = None
+
+    if "a" in results and "b" in results:
+        fig = go.Figure()
+
+        fig.add_trace(go.Bar(
+            x=["Product A", "Product B"],
+            y=[
+                results["a"]["positive_percentage"],
+                results["b"]["positive_percentage"]
+            ],
+            marker_color='green',
+            width=0.4,
+        ))
+
+        fig.update_layout(
+            height=420,
+            margin=dict(l=20,r=20,t=20,b=20),
+
+        paper_bgcolor='rgba(0,0,0,0)',
+
+        plot_bgcolor='rgba(0,0,0,0)',
+
+        xaxis_title="",
+
+        yaxis_title="Positive Reviews (%)",
+
+        font=dict(size=15),
+
+        showlegend=False
+    )
+
+    comparison_chart = plot(
+        fig,
+        output_type="div",
+        include_plotlyjs=False
+    )
+        
+
     return render(
         request,
         "dashboard.html",
         {
             "results": results,
+            "comparison_chart": comparison_chart,
         }
     )

@@ -6,3 +6,4 @@ textblob==0.20.0
 torch
 transformers
 spacy
+plotly
