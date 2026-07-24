@@ -135,7 +135,7 @@ def analyze_review(request):
 
         return redirect("chart_page")
 
-    return render(request, "reviews_list.html")
+    return render(request, "index.html")
 
 
 def chart_page(request):
@@ -153,7 +153,7 @@ def chart_page(request):
                 results["b"]["positive_percentage"]
             ],
             marker_color='green',
-            width=0.4,
+            width=0.1,
         ))
 
         fig.update_layout(
