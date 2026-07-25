@@ -1,193 +1,158 @@
-# Product Review Sentiment Analyzer
+# Product Review Sentiment Analysis System
 
-## Overview
-The **Product Review Sentiment Analyzer** is a Django-based web application that performs sentiment analysis on product reviews.
+A web application that analyzes customer reviews from Daraz products using a transformer-based sentiment analysis model. The system retrieves reviews automatically, classifies customer sentiment, and presents the results through an interactive dashboard with visual analytics and product comparison.
 
-Users can:
-- Enter a **manual review**, or
-- Provide a **Daraz product URL** to analyze all available reviews
+## Preview
 
-The system processes the input using NLP techniques and generates insights such as sentiment distribution, key terms, and overall product perception.
+> Screenshots will be added here.
+
+| Home | Dashboard |
+|------|-----------|
+| ![Home](docs/home.png) | ![Dashboard](docs/dashboard.png) |
 
 ---
 
 ## Features
 
-- Manual review sentiment analysis  
-- Daraz product review scraping  
-- Sentiment classification (Positive, Negative, Neutral)  
-- Sentiment distribution with percentages  
-- Top words extraction per sentiment  
-- Sample review display  
-- Data storage using Django models  
-- Chart-ready output (Chart.js compatible)
+- Analyze reviews directly from a Daraz product URL
+- Compare two products side by side
+- Automatic review extraction
+- Positive, Neutral and Negative sentiment classification
+- Interactive dashboard with charts
+- Overall product recommendation
+- Sample positive and negative reviews
+- Responsive interface
 
 ---
 
-## Tech Stack
+## Technology Stack
 
-**Backend**
-- Django
-- Python
-
-**NLP & AI**
-- Hugging Face `transformers` (DistilBERT)
-- TensorFlow (Backend for Hugging Face Transformers)
-
-**Frontend**
-- HTML, CSS, JavaScript (Chart.js)
-- **Bootstrap** (Grid & Components)
-- **Custom CSS** (Styling & Theming)
-
-**Other Tools**
-- Requests
+| Category | Technologies |
+|----------|--------------|
+| Backend | Django, Python |
+| Frontend | HTML, CSS, Bootstrap, JavaScript |
+| NLP | Hugging Face Transformers, PyTorch |
+| Data Collection | Requests, BeautifulSoup |
+| Visualization | Plotly |
 
 ---
 
-## Project Structure
+## Project Workflow
 
 ```
-product_analyzer/
-├── reviews/
-│   ├── services/           # Business logic layer
-│   │   ├── analytics_service.py
-│   │   ├── daraz_service.py
-│   │   ├── scraper_service.py
-│   │   └── sentiment_service.py
-│   ├── utils/              # Helpers and text cleaning
-│   │   ├── helpers.py
-│   │   └── text_cleaner.py
-│   └── views.py
-├── templates/
-├── manage.py
-├── requirements.txt
+                 Product URL
+                      │
+                      ▼
+            Extract Product ID
+                      │
+                      ▼
+             Retrieve Reviews
+                      │
+                      ▼
+           Text Preprocessing
+                      │
+                      ▼
+     Transformer Sentiment Model
+                      │
+                      ▼
+         Sentiment Classification
+                      │
+                      ▼
+      Dashboard & Product Comparison
 ```
 
 ---
 
 ## Installation
 
-### 1. Clone Repository
+Clone the repository.
+
 ```bash
-git clone https://github.com/MoktanSujita/Product-Review-Analytics-and-Sentiment-Analysis-System.git
-cd product_analyzer
+git clone https://github.com/MoktanSujita/Product-Review-Sentiment-Analysis-System.git
 ```
 
-### 2. Create Virtual Environment
+Move into the project directory.
+
 ```bash
-python -m venv .venv
+cd Product-Review-Sentiment-Analysis-System
 ```
 
-Activate environment:
-```bash
-# Linux / Mac
-source .venv/bin/activate
+Create a virtual environment.
 
-# Windows
-.venv\Scripts\activate
+```bash
+python -m venv venv
 ```
 
-### 3. Install Dependencies
+Activate it.
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux/macOS
+
+```bash
+source venv/bin/activate
+```
+
+Install the dependencies.
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Download NLP Resources
-```bash
-python -m textblob.download_corpora
-```
+Run the server.
 
-### 5. Apply Migrations
-```bash
-python manage.py migrate
-```
-
-### 6. Run Server
 ```bash
 python manage.py runserver
 ```
 
----
-
-## Usage
-
-### Manual Review
-- Enter text in the input field
-- Submit to get:
-  - Sentiment label
-  - Polarity score
-
----
-
-### URL-Based Analysis
-Paste a Daraz product URL:
-```
-https://www.daraz.com.np/products/...
-```
-
-The system will:
-- Extract product ID
-- Fetch reviews
-- Analyze sentiments
-
----
-
-## How It Works
-
-### 1. Input Detection
-- Text → Direct analysis  
-- URL → Scraping + batch processing  
-
-### 2. Review Extraction
-- Extracts `itemId` using regex  
-- Calls Daraz API:
-```
-/pdp/review/getReviewList
-```
-
-### 3. Sentiment Analysis
-The system uses a pre-trained **DistilBERT** model from Hugging Face to perform pre-trained DistilBERT-based sentiment classifier (Hugging Face Transformers)
-
-```python
-from transformers import pipeline
-
-# Initialize the pipeline
-classifier = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
-
-def analyze_sentiment(text):
-    result = classifier(text)
-    return result
+Open
 
 ```
-
-## Example Output
-
-```
-Total Reviews: 120
-Positive: 70 (58.3%)
-Negative: 30 (25%)
-Overall Sentiment: Positive
-
-Neutral sentiment is derived using a confidence threshold on model output scores.
+http://127.0.0.1:8000/
 ```
 
 ---
 
+## Repository Structure
 
-## Limitations
+```
+Product-Review-Sentiment-Analysis-System
+│
+├── analyzer/
+├── static/
+├── templates/
+├── media/
+├── manage.py
+├── requirements.txt
+└── README.md
+```
 
-- **Scraping Reliability:** The project relies on direct requests to Daraz, which may be subject to rate-limiting or changes in their site structure.
-- **Resource Intensity:** Transformer models (DistilBERT) are more resource-intensive than rule-based models and require sufficient RAM/CPU for real-time processing.
-- **Language Support:** Currently optimized for English-based sentiments, with future plans for localized language models.
-- **Noisy real-world data:** Daraz reviews often include mixed English and Romanized Nepali text, which affects sentiment consistency.
+---
 
-## Future Improvements
+## Challenges
 
-- **Caching:** Implement Redis or Django caching to store results for frequently searched products.
-- **Async Scraping:** Use `Celery` or `asyncio` to handle scraping in the background to avoid blocking the user experience.
-- **UI/UX:** Further visual enhancements for the dashboard.
+- Handling multilingual and romanized Nepali reviews
+- Retrieving reviews from dynamically generated product pages
+- Selecting an appropriate multilingual sentiment model
+- Presenting analytical results in an intuitive dashboard
 
-## Model Evolution
--Started with TextBlob for baseline sentiment scoring
--Moved to transformer-based DistilBERT for improved contextual understanding
--Current focus is on improving robustness for real-world noisy review data
+---
+
+## Future Work
+
+- Support additional e-commerce platforms
+- Aspect-based sentiment analysis
+- Review summarization
+- User authentication
+- Report export
+- REST API
+
+---
+
+## License
+
+This project is licensed under the MIT License.
