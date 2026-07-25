@@ -1,45 +1,64 @@
 :root{
-    --glass-bg:#ffffff;
-    --glass-bg-strong:#ffffff;
-    --glass-border:rgba(255,255,255,.95);
-    --glass-shadow:0 18px 45px rgba(0,0,0,.18);
+    --glass-bg:rgba(255,255,255,.15);
+    --glass-border:rgba(255,255,255,.25);
+    --card-bg:#ffffff;
+    --shadow:0 18px 45px rgba(0,0,0,.15);
+    --text-muted:#6b7280;
+    --primary:#6c63ff;
+    --positive:#14c7d9;
+    --negative:#4f46e5;
+    --neutral:#e5e7eb;
 }
 
-  body{
+/* ===========================
+   BODY
+=========================== */
+
+body{
+
     min-height:100vh;
-    font-family:'Segoe UI',system-ui,sans-serif;
 
-    background:
-        linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)),
-        url("/static/images/dashboard-bg.jpeg");
+    font-family:'Segoe UI',sans-serif;
 
+    background-image:
+    linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.15)),
+    url("/static/images/dashboard-bg.jpeg");
     background-size:cover;
     background-position:center;
     background-repeat:no-repeat;
     background-attachment:fixed;
 
-    padding:32px 24px;
+    padding:30px;
 }
 
-  .glass-card{
-    background:#fff;
-    border-radius:24px;
-    border:1px solid rgba(255,255,255,.9);
+
+/* ===========================
+   GLASS CONTAINER
+=========================== */
+
+.glass-panel{
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+
+    border:1px solid rgba(255,255,255,.20);
+
+    border-radius:30px;
 
     box-shadow:
-        0 15px 35px rgba(0,0,0,.12);
+        0 20px 45px rgba(0,0,0,.18);
 
-    transition:.25s;
 }
 
-.glass-card:hover{
-    transform:translateY(-2px);
-}
-  .glass-card:hover{
-    box-shadow: 0 12px 40px rgba(31,38,135,0.25);
-  }
 
-  .glass-navbar{
+/* ===========================
+   NAVBAR
+=========================== */
+
+.glass-navbar{
+
     background:rgba(255,255,255,.18);
 
     backdrop-filter:blur(18px);
@@ -48,133 +67,260 @@
     border:1px solid rgba(255,255,255,.25);
 
     border-radius:22px;
+
 }
 
-  .mini-stat{
+
+/* ===========================
+   WHITE CARDS
+=========================== */
+
+.glass-card{
+
+    background:#fff;
+
+    border-radius:26px;
+
+    border:none;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.10);
+
+    transition:.25s;
+
+}
+
+.glass-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.16);
+
+}
+
+
+/* ===========================
+   TEXT
+=========================== */
+
+.text-muted-soft{
+
+    color:#8b95a7 !important;
+
+}
+
+.fw-800{
+
+    font-weight:800;
+
+}
+
+.product-name{
+
+    color:#6c63ff;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+
+/* ===========================
+   SENTIMENT METER
+=========================== */
+
+.gauge{
+
+    position:relative;
+
+    width:280px;
+
+    height:155px;
+
+    margin:auto;
+
+    overflow:hidden;
+
+}
+
+.gauge-ring{
+
+    width:280px;
+
+    height:280px;
+
+    border-radius:50%;
+
+    position:absolute;
+
+    clip-path:polygon(0 0,100% 0,100% 50%,0 50%);
+
+}
+
+.gauge-ring::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:22px;
+
+    background:#fff;
+
+    border-radius:50%;
+
+}
+
+.gauge-content{
+
+    position:absolute;
+
+    left:50%;
+
+    top:18px;
+
+    transform:translateX(-50%);
+
+    text-align:center;
+
+    z-index:10;
+
+}
+
+.gauge-content i{
+
+    color:#14c7d9;
+
+    font-size:28px;
+
+}
+
+.gauge-content p{
+
+    color:#4f46e5;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    margin:8px 0 0;
+
+}
+
+.gauge-content h2{
+
+    font-size:54px;
+
+    font-weight:800;
+
+    margin-top:-5px;
+
+}
+
+
+/* ===========================
+   RECOMMENDATION BUTTON
+=========================== */
+
+.recommend-btn{
+
+    margin-top:30px;
+
+    padding:15px;
+
+    width:100%;
+
+    border-radius:50px;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    text-align:center;
+
+    background:#e7f8f2;
+
+    color:#18a66b;
+
+}
+
+.recommend-btn.caution{
+
+    background:#ffeaea;
+
+    color:#e24747;
+
+}
+
+.recommend-btn.neutral{
+
+    background:#fff5d9;
+
+    color:#d99800;
+
+}
+
+
+/* ===========================
+   MINI STATS
+=========================== */
+
+.mini-stat{
+
     background:#fff;
 
     border-radius:22px;
 
-    border:none;
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.10);
 
-    box-shadow:0 12px 30px rgba(0,0,0,.12);
 }
 
-  .icon-badge{
-    width:44px;height:44px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.1rem;
-  }
+.icon-badge{
 
-  .text-muted-soft{ color:#6b7280 !important; }
-  .fw-800{ font-weight:800; }
+    width:48px;
 
-  /* ===== SEMI-CIRCULAR GAUGE STYLES ===== */
-  .gauge {
-    position: relative;
-    width: 260px;
-    height: 140px; /* Half-circle height container */
-    margin: 10px auto 20px auto;
-    overflow: hidden;
-  }
+    height:48px;
 
-  .gauge-ring {
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Masks out the bottom half to create a 180-degree semi-circle arc */
-    clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-  }
-
-  .gauge-ring::before {
-    content: "";
-    position: absolute;
-    inset: 20px; /* Controls thickness of the ring */
-    background: var(--glass-bg-strong);
-    border-radius: 50%;
-  }
-
-  .gauge-content {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 2;
-  }
-
-  .gauge-content i {
-    font-size: 1.2rem;
-    color: #14c7d9;
-    margin-bottom: 2px;
-  }
-
-  .gauge-content p {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #4b2ea0;
-    margin-bottom: 0;
-  }
-
-  .gauge-content h2 {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #1f2937;
-    margin-top: -2px;
-  }
-  /* ======================================= */
-
-  .donut{
-    width:150px;height:150px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    position:relative;
-  }
-  .donut::before{
-    content:"";
-    position:absolute; inset:12px;
-    background: var(--glass-bg-strong);
     border-radius:50%;
-  }
-  .donut-label{ position:relative; z-index:2; text-align:center; }
 
-  .bar{
-    width:14px;
-    border-radius:6px 6px 0 0;
-    display:inline-block;
-  }
+    display:flex;
 
-  .recommend-btn{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border-radius:40px;
-    text-align:center;
-    font-weight:600;
-    background:#f7f5ff;
-    color:#6655c9;
-    border:1px solid #d8d1ff;
-    transition:.3s;
-  }
-  .recommend-btn.caution{
-    background:#fff1f1;
-    color:#d23c3c;
-    border-color:#ffd1d1;
-  }
-  .recommend-btn.neutral{
-    background:#fff9eb;
-    color:#c58a00;
-    border-color:#ffe7a8;
-  }
+    justify-content:center;
 
-  .glass-panel{
-    background: rgba(255,255,255,.25);
-    backdrop-filter: blur(18px);
-    --webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255,255,255,.25);
-  }
+    align-items:center;
+
+    font-size:20px;
+
+}
+
+
+/* ===========================
+   COMPARISON CARD
+=========================== */
+
+.comparison-card{
+
+    padding:30px;
+
+    border-radius:26px;
+
+}
+
+
+/* ===========================
+   PLOTLY
+=========================== */
+
+.js-plotly-plot,
+.plot-container{
+
+    width:100% !important;
+
+    height:470px !important;
+
+}

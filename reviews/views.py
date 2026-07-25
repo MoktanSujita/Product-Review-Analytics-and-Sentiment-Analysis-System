@@ -141,43 +141,99 @@ def analyze_review(request):
 def chart_page(request):
     results = request.session.get("results", {})
 
-    comparison_chart = None
 
-    if "a" in results and "b" in results:
-        fig = go.Figure()
+    categories = [
+    "Positive",
+    "Negative",
+    "Neutral",
+    "Reviews"
+    ]
 
-        fig.add_trace(go.Bar(
-            x=["Product A", "Product B"],
-            y=[
-                results["a"]["positive_percentage"],
-                results["b"]["positive_percentage"]
-            ],
-            marker_color='green',
-            width=0.1,
-        ))
+    product_a = [
+    results["a"]["positive_percentage"],
+    results["a"]["negative_percentage"],
+    results["a"]["neutral_percentage"],
+    results["a"]["total_reviews"]
+    ]
 
-        fig.update_layout(
-            height=420,
-            margin=dict(l=20,r=20,t=20,b=20),
+    product_b = [
+    results["b"]["positive_percentage"],
+    results["b"]["negative_percentage"],
+    results["b"]["neutral_percentage"],
+    results["b"]["total_reviews"]
+    ]
 
-        paper_bgcolor='rgba(0,0,0,0)',
+    fig = go.Figure()
 
-        plot_bgcolor='rgba(0,0,0,0)',
-
-        xaxis_title="",
-
-        yaxis_title="Positive Reviews (%)",
-
-        font=dict(size=15),
-
-        showlegend=False
+    fig.add_trace(
+    go.Bar(
+        name="Product A",
+        x=['Positive', 'Negative', 'Neutral', 'Sales'],
+        y=[results["a"]["positive_percentage"],
+           results["a"]["negative_percentage"],
+           results["a"]["neutral_percentage"],
+           results["a"]["total_reviews"]],
+        marker_color="#d9d9d9",
+        width=0.25
+    )
     )
 
-    comparison_chart = plot(
-        fig,
-        output_type="div",
-        include_plotlyjs=False
+    fig.add_trace(
+    go.Bar(
+        name="Product B",
+        x=['Positive', 'Negative', 'Neutral', 'Sales'],
+        y=[results["b"]["positive_percentage"],
+           results["b"]["negative_percentage"],
+           results["b"]["neutral_percentage"],
+           results["b"]["total_reviews"]],
+        marker_color="#20c997",
+        width=0.25
     )
+    )
+    fig.update_traces(
+        marker_line_width=0,
+        marker=dict(
+            cornerradius=30
+        )
+    )
+
+    fig.update_layout(
+
+    barmode="group",
+
+    plot_bgcolor="rgba(0,0,0,0)",
+    paper_bgcolor="rgba(0,0,0,0)",
+
+    height=350,
+
+    margin=dict(l=20,r=20,t=20,b=20),
+
+    showlegend=True,
+
+    legend=dict(
+        orientation="h",
+        y=1.08,
+        x=0.35
+    ),
+
+    font=dict(
+        family="Segoe UI",
+        size=14
+    ),
+
+    xaxis=dict(
+        showgrid=False,
+        tickfont=dict(size=15)
+    ),
+
+    yaxis=dict(
+        showgrid=True,
+        gridcolor="#efefef",
+        zeroline=False
+    )
+    )
+
+    comparison_chart = fig.to_html(full_html=False)
         
 
     return render(
