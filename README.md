@@ -4,8 +4,6 @@ A web application that analyzes customer reviews from Daraz products using a tra
 
 ## Preview
 
-> Screenshots will be added here.
-
 | Home | Dashboard |
 |------|-----------|
 | ![Home](docs/home.png) | ![Dashboard](docs/dashboard.png) |
